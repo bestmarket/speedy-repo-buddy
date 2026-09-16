@@ -34,21 +34,23 @@ export type AdminData = {
   telemetry: AdminTelemetry;
 };
 
-async function isAdminUser(
-  supabase: { rpc: (fn: "has_role", args: { _user_id: string; _role: "admin" }) => unknown },
-  userId: string,
-) {
-  const { data } = (await supabase.rpc("has_role", {
+type RpcClient = {
+  rpc: (fn: "has_role", args: { _user_id: string; _role: "admin" }) => unknown;
+};
+
+async function isAdminUser(supabase: unknown, userId: string) {
+  const { data } = (await (supabase as RpcClient).rpc("has_role", {
     _user_id: userId,
     _role: "admin",
   })) as { data: boolean | null };
   return data === true;
 }
 
-async function assertAdmin(context: { supabase: never; userId: string }) {
+async function assertAdmin(context: { supabase: unknown; userId: string }) {
   const ok = await isAdminUser(context.supabase, context.userId);
   if (!ok) throw new Error("Admins only.");
 }
+
 
 async function db() {
   const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
