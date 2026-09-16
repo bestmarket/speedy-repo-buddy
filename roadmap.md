@@ -3,14 +3,14 @@
 ## Import speedy-repo-hugger
 - [x] Enable Lovable Cloud
 - [x] Copy app code, packages
-- [ ] Apply database migrations (schema, roles, AI governance)
-- [ ] Create `media` storage bucket
-- [ ] Enable email sign-in + Google sign-in
-- [ ] Verify build, typecheck, sign-up and each page
+- [x] Apply database tables (projects, videos, channels, AI settings, roles)
+- [x] Create private `media` storage bucket
+- [x] Enable email sign-in + Google sign-in
+- [x] Verify sign-in and pages with a temporary test account (removed after)
 
-## Admin setup (requested follow-up)
-- [ ] `/admin` page (AI provider keys, toggles, telemetry numbers)
-- [ ] Admin-only access check + menu link
-- [ ] Server actions: save provider keys/toggles, return usage telemetry
-- [ ] Grant admin role to the account owner
-- [ ] Test AI routing through the admin settings
+## Admin setup
+- [x] `/app/admin` page: engine choices, zero-cost mode, provider keys, usage numbers
+- [x] Admin-only access check + Admin menu link shown to admins only
+- [x] Server actions for keys, toggles, defaults and telemetry
+- [x] Admin role: first signed-in person can take the admin seat (one-time)
+- [x] AI routing tested end to end (reply received through the built-in AI)
