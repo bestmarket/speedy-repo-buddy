@@ -1,5 +1,5 @@
 import { createFileRoute, Link, Outlet, useNavigate, useRouterState } from "@tanstack/react-router";
-import { useMutation } from "@tanstack/react-query";
+import { useMutation, useQuery } from "@tanstack/react-query";
 import { useServerFn } from "@tanstack/react-start";
 import { Folder, Loader2, LogOut, Menu, Plus } from "lucide-react";
 import { useEffect, useState } from "react";
@@ -10,6 +10,7 @@ import { Input } from "@/components/ui/input";
 import { Sheet, SheetContent, SheetTitle, SheetTrigger } from "@/components/ui/sheet";
 import { supabase } from "@/integrations/supabase/client";
 import type { Tables } from "@/integrations/supabase/types";
+import { getAdminStatus } from "@/lib/admin.functions";
 import { createProject, type ChannelProfile } from "@/lib/studio.functions";
 import {
   useRefreshWorkspace,
@@ -34,8 +35,18 @@ const TABS = [
   { to: "/app/channels", label: "Channels" },
 ] as const;
 
+function useIsAdmin() {
+  const status = useQuery({
+    queryKey: ["admin-status"],
+    queryFn: () => getAdminStatus(),
+    staleTime: 60_000,
+  });
+  return Boolean(status.data?.isAdmin);
+}
+
 function AppLayout() {
   const navigate = useNavigate();
+  const isAdmin = useIsAdmin();
   const workspace = useWorkspace();
   const refresh = useRefreshWorkspace();
   const { selectProject } = useWorkspaceSelection();
@@ -194,6 +205,17 @@ function AppLayout() {
                     {tab.label}
                   </Link>
                 ))}
+                {isAdmin ? (
+                  <Link
+                    to="/app/admin"
+                    className="rounded-md px-3 py-3 text-sm text-muted-foreground transition-colors hover:bg-sidebar-accent hover:text-foreground"
+                    activeProps={{
+                      className: cn("bg-sidebar-accent text-sidebar-accent-foreground font-medium"),
+                    }}
+                  >
+                    Admin
+                  </Link>
+                ) : null}
               </nav>
               {projectList}
             </SheetContent>
@@ -216,6 +238,15 @@ function AppLayout() {
                 {tab.label}
               </Link>
             ))}
+            {isAdmin ? (
+              <Link
+                to="/app/admin"
+                className="-mb-px shrink-0 border-b-2 border-transparent px-3 py-2 text-sm text-muted-foreground transition-colors hover:text-foreground"
+                activeProps={{ className: cn("border-primary text-foreground font-medium") }}
+              >
+                Admin
+              </Link>
+            ) : null}
           </nav>
         </header>
 
