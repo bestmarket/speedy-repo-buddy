@@ -22,7 +22,7 @@ import {
   type AdminData,
 } from "@/lib/admin.functions";
 
-export const Route = createFileRoute("/_authenticated/admin")({
+export const Route = createFileRoute("/_authenticated/app/admin")({
   head: () => ({
     meta: [
       { title: "Admin · Channel Studio" },
