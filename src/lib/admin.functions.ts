@@ -34,15 +34,20 @@ export type AdminData = {
   telemetry: AdminTelemetry;
 };
 
-type Ctx = { supabase: { rpc: (fn: string, args: unknown) => Promise<{ data: unknown }> } };
-
-async function assertAdmin(context: { supabase: unknown; userId: string }) {
-  const supabase = context.supabase as Ctx["supabase"];
-  const { data } = await supabase.rpc("has_role", {
-    _user_id: context.userId,
+async function isAdminUser(
+  supabase: { rpc: (fn: "has_role", args: { _user_id: string; _role: "admin" }) => unknown },
+  userId: string,
+) {
+  const { data } = (await supabase.rpc("has_role", {
+    _user_id: userId,
     _role: "admin",
-  });
-  if (data !== true) throw new Error("Admins only.");
+  })) as { data: boolean | null };
+  return data === true;
+}
+
+async function assertAdmin(context: { supabase: never; userId: string }) {
+  const ok = await isAdminUser(context.supabase, context.userId);
+  if (!ok) throw new Error("Admins only.");
 }
 
 async function db() {
@@ -54,12 +59,7 @@ async function db() {
 export const getAdminStatus = createServerFn({ method: "GET" })
   .middleware([requireSupabaseAuth])
   .handler(async ({ context }) => {
-    const supabase = context.supabase as Ctx["supabase"];
-    const { data } = await supabase.rpc("has_role", {
-      _user_id: context.userId,
-      _role: "admin",
-    });
-    const isAdmin = data === true;
+    const isAdmin = await isAdminUser(context.supabase, context.userId);
 
     const admin = await db();
     const { count } = await admin
@@ -196,10 +196,12 @@ export const saveProvider = createServerFn({ method: "POST" })
     await assertAdmin(context);
     const admin = await db();
 
-    const patch: Record<string, unknown> = { updated_at: new Date().toISOString() };
-    if (typeof data.enabled === "boolean") patch["enabled"] = data.enabled;
-    if (data.clearKey) patch["api_key"] = null;
-    else if (data.apiKey && data.apiKey.trim()) patch["api_key"] = data.apiKey.trim();
+    const patch: { updated_at: string; enabled?: boolean; api_key?: string | null } = {
+      updated_at: new Date().toISOString(),
+    };
+    if (typeof data.enabled === "boolean") patch.enabled = data.enabled;
+    if (data.clearKey) patch.api_key = null;
+    else if (data.apiKey && data.apiKey.trim()) patch.api_key = data.apiKey.trim();
 
     const { error } = await admin.from("ai_providers").update(patch).eq("id", data.id);
     if (error) throw new Error(error.message);
