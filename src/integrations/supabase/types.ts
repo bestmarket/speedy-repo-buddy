@@ -14,16 +14,585 @@ export type Database = {
   }
   public: {
     Tables: {
-      [_ in never]: never
+      ai_providers: {
+        Row: {
+          api_key: string | null
+          category: string
+          enabled: boolean
+          id: string
+          label: string
+          requires_key: boolean
+          sort_order: number
+          tier: string
+          updated_at: string
+          zero_cost: boolean
+        }
+        Insert: {
+          api_key?: string | null
+          category: string
+          enabled?: boolean
+          id: string
+          label: string
+          requires_key?: boolean
+          sort_order?: number
+          tier: string
+          updated_at?: string
+          zero_cost?: boolean
+        }
+        Update: {
+          api_key?: string | null
+          category?: string
+          enabled?: boolean
+          id?: string
+          label?: string
+          requires_key?: boolean
+          sort_order?: number
+          tier?: string
+          updated_at?: string
+          zero_cost?: boolean
+        }
+        Relationships: []
+      }
+      ai_settings: {
+        Row: {
+          key: string
+          updated_at: string
+          value: Json
+        }
+        Insert: {
+          key: string
+          updated_at?: string
+          value?: Json
+        }
+        Update: {
+          key?: string
+          updated_at?: string
+          value?: Json
+        }
+        Relationships: []
+      }
+      channels: {
+        Row: {
+          active: boolean
+          auto_post: boolean
+          created_at: string
+          handle: string
+          id: string
+          platform: string
+          project_id: string | null
+          updated_at: string
+          user_id: string
+          webhook_url: string | null
+        }
+        Insert: {
+          active?: boolean
+          auto_post?: boolean
+          created_at?: string
+          handle?: string
+          id?: string
+          platform?: string
+          project_id?: string | null
+          updated_at?: string
+          user_id: string
+          webhook_url?: string | null
+        }
+        Update: {
+          active?: boolean
+          auto_post?: boolean
+          created_at?: string
+          handle?: string
+          id?: string
+          platform?: string
+          project_id?: string | null
+          updated_at?: string
+          user_id?: string
+          webhook_url?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "channels_project_id_fkey"
+            columns: ["project_id"]
+            isOneToOne: false
+            referencedRelation: "projects"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      cron_config: {
+        Row: {
+          created_at: string
+          name: string
+          token: string
+        }
+        Insert: {
+          created_at?: string
+          name: string
+          token: string
+        }
+        Update: {
+          created_at?: string
+          name?: string
+          token?: string
+        }
+        Relationships: []
+      }
+      ideas: {
+        Row: {
+          angle: string | null
+          created_at: string
+          hook: string | null
+          id: string
+          project_id: string
+          selected: boolean
+          title: string
+          user_id: string
+        }
+        Insert: {
+          angle?: string | null
+          created_at?: string
+          hook?: string | null
+          id?: string
+          project_id: string
+          selected?: boolean
+          title: string
+          user_id: string
+        }
+        Update: {
+          angle?: string | null
+          created_at?: string
+          hook?: string | null
+          id?: string
+          project_id?: string
+          selected?: boolean
+          title?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "ideas_project_id_fkey"
+            columns: ["project_id"]
+            isOneToOne: false
+            referencedRelation: "projects"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      posts: {
+        Row: {
+          channel_id: string
+          created_at: string
+          error: string | null
+          external_url: string | null
+          id: string
+          posted_at: string | null
+          status: string
+          updated_at: string
+          user_id: string
+          video_id: string
+        }
+        Insert: {
+          channel_id: string
+          created_at?: string
+          error?: string | null
+          external_url?: string | null
+          id?: string
+          posted_at?: string | null
+          status?: string
+          updated_at?: string
+          user_id: string
+          video_id: string
+        }
+        Update: {
+          channel_id?: string
+          created_at?: string
+          error?: string | null
+          external_url?: string | null
+          id?: string
+          posted_at?: string | null
+          status?: string
+          updated_at?: string
+          user_id?: string
+          video_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "posts_channel_id_fkey"
+            columns: ["channel_id"]
+            isOneToOne: false
+            referencedRelation: "channels"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "posts_video_id_fkey"
+            columns: ["video_id"]
+            isOneToOne: false
+            referencedRelation: "videos"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      profiles: {
+        Row: {
+          created_at: string
+          display_name: string | null
+          email: string | null
+          id: string
+        }
+        Insert: {
+          created_at?: string
+          display_name?: string | null
+          email?: string | null
+          id: string
+        }
+        Update: {
+          created_at?: string
+          display_name?: string | null
+          email?: string | null
+          id?: string
+        }
+        Relationships: []
+      }
+      projects: {
+        Row: {
+          brainstorm: string | null
+          brainstorm_at: string | null
+          channel_profile: Json | null
+          created_at: string
+          id: string
+          name: string
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          brainstorm?: string | null
+          brainstorm_at?: string | null
+          channel_profile?: Json | null
+          created_at?: string
+          id?: string
+          name?: string
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          brainstorm?: string | null
+          brainstorm_at?: string | null
+          channel_profile?: Json | null
+          created_at?: string
+          id?: string
+          name?: string
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
+      scripts: {
+        Row: {
+          created_at: string
+          description: string | null
+          id: string
+          idea_id: string | null
+          project_id: string
+          scenes: Json
+          tags: string[] | null
+          title: string
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          description?: string | null
+          id?: string
+          idea_id?: string | null
+          project_id: string
+          scenes?: Json
+          tags?: string[] | null
+          title: string
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          description?: string | null
+          id?: string
+          idea_id?: string | null
+          project_id?: string
+          scenes?: Json
+          tags?: string[] | null
+          title?: string
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "scripts_idea_id_fkey"
+            columns: ["idea_id"]
+            isOneToOne: false
+            referencedRelation: "ideas"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "scripts_project_id_fkey"
+            columns: ["project_id"]
+            isOneToOne: false
+            referencedRelation: "projects"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      source_videos: {
+        Row: {
+          analysis: Json | null
+          created_at: string
+          error: string | null
+          id: string
+          position: number
+          project_id: string
+          published_at: string | null
+          source_id: string
+          status: string
+          thumbnail_url: string | null
+          title: string | null
+          transcript: string | null
+          transcript_source: string | null
+          updated_at: string
+          url: string
+          user_id: string
+          video_id: string
+        }
+        Insert: {
+          analysis?: Json | null
+          created_at?: string
+          error?: string | null
+          id?: string
+          position?: number
+          project_id: string
+          published_at?: string | null
+          source_id: string
+          status?: string
+          thumbnail_url?: string | null
+          title?: string | null
+          transcript?: string | null
+          transcript_source?: string | null
+          updated_at?: string
+          url: string
+          user_id: string
+          video_id: string
+        }
+        Update: {
+          analysis?: Json | null
+          created_at?: string
+          error?: string | null
+          id?: string
+          position?: number
+          project_id?: string
+          published_at?: string | null
+          source_id?: string
+          status?: string
+          thumbnail_url?: string | null
+          title?: string | null
+          transcript?: string | null
+          transcript_source?: string | null
+          updated_at?: string
+          url?: string
+          user_id?: string
+          video_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "source_videos_project_id_fkey"
+            columns: ["project_id"]
+            isOneToOne: false
+            referencedRelation: "projects"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "source_videos_source_id_fkey"
+            columns: ["source_id"]
+            isOneToOne: false
+            referencedRelation: "sources"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      sources: {
+        Row: {
+          content: string
+          created_at: string
+          id: string
+          kind: string
+          label: string | null
+          project_id: string
+          user_id: string
+        }
+        Insert: {
+          content: string
+          created_at?: string
+          id?: string
+          kind?: string
+          label?: string | null
+          project_id: string
+          user_id: string
+        }
+        Update: {
+          content?: string
+          created_at?: string
+          id?: string
+          kind?: string
+          label?: string | null
+          project_id?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "sources_project_id_fkey"
+            columns: ["project_id"]
+            isOneToOne: false
+            referencedRelation: "projects"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      usage_events: {
+        Row: {
+          category: string
+          cost_usd: number
+          created_at: string
+          id: string
+          provider: string
+          success: boolean
+          units: number
+          user_id: string | null
+        }
+        Insert: {
+          category: string
+          cost_usd?: number
+          created_at?: string
+          id?: string
+          provider: string
+          success?: boolean
+          units?: number
+          user_id?: string | null
+        }
+        Update: {
+          category?: string
+          cost_usd?: number
+          created_at?: string
+          id?: string
+          provider?: string
+          success?: boolean
+          units?: number
+          user_id?: string | null
+        }
+        Relationships: []
+      }
+      user_roles: {
+        Row: {
+          created_at: string
+          id: string
+          role: Database["public"]["Enums"]["app_role"]
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          role: Database["public"]["Enums"]["app_role"]
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          role?: Database["public"]["Enums"]["app_role"]
+          user_id?: string
+        }
+        Relationships: []
+      }
+      videos: {
+        Row: {
+          created_at: string
+          error: string | null
+          id: string
+          language: string
+          progress: number
+          project_id: string
+          scenes: Json
+          scheduled_at: string | null
+          script_id: string
+          settings: Json
+          status: string
+          style: string
+          title: string
+          updated_at: string
+          user_id: string
+          video_path: string | null
+        }
+        Insert: {
+          created_at?: string
+          error?: string | null
+          id?: string
+          language?: string
+          progress?: number
+          project_id: string
+          scenes?: Json
+          scheduled_at?: string | null
+          script_id: string
+          settings?: Json
+          status?: string
+          style?: string
+          title?: string
+          updated_at?: string
+          user_id: string
+          video_path?: string | null
+        }
+        Update: {
+          created_at?: string
+          error?: string | null
+          id?: string
+          language?: string
+          progress?: number
+          project_id?: string
+          scenes?: Json
+          scheduled_at?: string | null
+          script_id?: string
+          settings?: Json
+          status?: string
+          style?: string
+          title?: string
+          updated_at?: string
+          user_id?: string
+          video_path?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "videos_project_id_fkey"
+            columns: ["project_id"]
+            isOneToOne: false
+            referencedRelation: "projects"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "videos_script_id_fkey"
+            columns: ["script_id"]
+            isOneToOne: false
+            referencedRelation: "scripts"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
     }
     Views: {
       [_ in never]: never
     }
     Functions: {
-      [_ in never]: never
+      has_role: {
+        Args: {
+          _role: Database["public"]["Enums"]["app_role"]
+          _user_id: string
+        }
+        Returns: boolean
+      }
     }
     Enums: {
-      [_ in never]: never
+      app_role: "admin" | "user"
     }
     CompositeTypes: {
       [_ in never]: never
@@ -150,6 +719,8 @@ export type CompositeTypes<
 
 export const Constants = {
   public: {
-    Enums: {},
+    Enums: {
+      app_role: ["admin", "user"],
+    },
   },
 } as const
