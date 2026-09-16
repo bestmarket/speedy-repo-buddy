@@ -129,8 +129,9 @@ function AdminDashboard() {
 
   const testMutation = useMutation({
     mutationFn: useServerFn(testAiRouting),
-    onSuccess: (result) =>
+    onSuccess: (result: { provider: string; ms: number; reply: string }) =>
       toast.success(`${result.provider} replied in ${result.ms} ms`, { description: result.reply }),
+
     onError: (error: Error) => toast.error(error.message),
   });
 
